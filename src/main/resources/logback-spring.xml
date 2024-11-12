@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--本文档根据谷歌搜索logback，然后A Guide To Logback。和spring官网中关于springboot中重要特性log部分编写-->
+<!--在应用程序运行时重新加载日志记录配置是一个强大的故障排除工具。 Logback 通过scan参数使这成为可能-->
+<!--默认行为是每 60 秒扫描一次配置文件是否有更改。我们可以通过添加scanPeriod来修改此间隔-->
+<configuration scan="true" scanPeriod="15 seconds">
+    <!--    StatusListener 拦截状态消息并在配置期间以及程序运行时打印它们。 所有配置文件的输出都会被打印出来，这使得它对于在类路径上定位“恶意”配置文件非常有用-->
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--    <appender name="FILE" class="ch.qos.logback.core.FileAppender">-->
+    <!--        <file>${LOG_DIR}/tests.log</file>-->
+    <!--        <append>true</append>-->
+    <!--        <encoder>-->
+    <!--            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>-->
+    <!--        </encoder>-->
+    <!--    </appender>-->
+    <!--    我们 在 RollingPolicy 中 定义了一个fileNamePattern 。 此模式不仅定义文件的名称，还定义滚动文件的频率。
+        TimeBasedRollingPolicy 检查模式并在最精细定义的周期内滚动。
+        该文件在每个月初滚动到 /Current Year/Current Month/LogFile.gz 中，并且RollingFileAppender创建 一个新的活动文件。
+        当存档文件的总大小达到 3GB 时，RollingFileAppender 将按照先进先出的原则删除存档。
+        RollingFileAppender 还内置了对压缩文件的支持。它压缩我们的滚动文件，因为我们将它们命名为LogFile.gz。
+    -->
+    <property name="LOG_DIR" value="/Users/liuyunchao/log/application/CryptAuth" />
+    <property name="LOG_FILE" value="LogFile" />
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/${LOG_FILE}.log</file>
+        <append>true</append>
+        <encoder>
+            <!--        <pattern>标记中的文本 定义日志消息的格式设置方式-->
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>utf-8</charset>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/%d{yyyy/MM/dd}/${LOG_FILE}.gz</fileNamePattern>
+            <totalSizeCap>3GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+    <!--&lt;!&ndash;    配置不同的开发环境，走不同的日志&ndash;&gt;-->
+    <!--    <springProfile name="dev | test | prod">-->
+    <!--        &lt;!&ndash; configuration to be enabled when the "dev" or "test" or "prod" profiles are active &ndash;&gt;-->
+    <!--        <root level="debug">-->
+    <!--            <appender-ref ref="STDOUT" />-->
+    <!--        </root>-->
+    <!--    </springProfile>-->
+
+    <root level="info">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>

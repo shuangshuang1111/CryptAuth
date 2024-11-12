@@ -19,9 +19,9 @@ public class JwtUtil {
     private long expiration;
 
     // 生成 JWT Token
-    public String generateToken(String username) {
+    public String generateToken(String userId) {
         return Jwts.builder()
-                .setSubject(username)
+                .setSubject(userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS256, secret)
@@ -36,8 +36,8 @@ public class JwtUtil {
                 .getBody();
     }
 
-    // 获取用户名
-    public String extractUsername(String token) {
+    // 获取用户userid
+    public String extractUserId(String token) {
         return extractClaims(token).getSubject();
     }
 
@@ -53,6 +53,6 @@ public class JwtUtil {
 
     // 验证 Token 是否有效
     public boolean validateToken(String token, User user) {
-        return (user.getUsername().equals(extractUsername(token)) && !isTokenExpired(token));
+        return (user.getUsername().equals(extractUserId(token)) && !isTokenExpired(token));
     }
 }
