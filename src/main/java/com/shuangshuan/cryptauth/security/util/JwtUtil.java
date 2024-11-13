@@ -1,9 +1,9 @@
 package com.shuangshuan.cryptauth.security.util;
 
-import com.shuangshuan.cryptauth.security.userdetail.User;
+import com.shuangshuan.cryptauth.security.userdetail.UserAccount;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.Claims;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -27,7 +27,6 @@ public class JwtUtil {
         secret = injectedSecret;
         expiration = injectedExpiration;
     }
-
 
 
     // 生成 JWT Token
@@ -64,7 +63,8 @@ public class JwtUtil {
     }
 
     // 验证 Token 是否有效
-    public static boolean validateToken(String token, User user) {
+
+    public static boolean validateToken(String token, UserAccount user) {
         return (user.getId().toString().equals(extractUserId(token)) && !isTokenExpired(token));
     }
 }
