@@ -1,6 +1,7 @@
 package com.shuangshuan.cryptauth;
 
 import com.shuangshuan.cryptauth.security.userdetail.UserAccount;
+import com.shuangshuan.cryptauth.security.util.JwtParseException;
 import com.shuangshuan.cryptauth.security.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ class CryptAuthApplicationTests {
 
 
     @Test
-    void contextLoads() {
+    void contextLoads() throws JwtParseException {
 
         String tocken = JwtUtil.generateToken("123456");
         System.out.println(tocken);
