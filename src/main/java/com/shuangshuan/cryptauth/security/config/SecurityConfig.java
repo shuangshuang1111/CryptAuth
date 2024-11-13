@@ -4,7 +4,6 @@ package com.shuangshuan.cryptauth.security.config;
 import com.shuangshuan.cryptauth.security.entrypoint.JwtAuthenticationEntryPoint;
 import com.shuangshuan.cryptauth.security.filter.JwtAuthenticationFilter;
 import com.shuangshuan.cryptauth.security.userdetail.UserDetailsServiceImpl;
-import com.shuangshuan.cryptauth.security.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,13 +23,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
 
-    private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
 
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public SecurityConfig(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
-        this.jwtUtil = jwtUtil;
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
@@ -38,7 +35,7 @@ public class SecurityConfig {
     // 配置 JWT 认证过滤器
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtil, userDetailsService,jwtAuthenticationEntryPoint);
+        return new JwtAuthenticationFilter(userDetailsService, jwtAuthenticationEntryPoint);
     }
 
     // 配置 HTTP 安全
@@ -50,7 +47,7 @@ public class SecurityConfig {
                         authorizationManagerRequestMatcherRegistry
                                 .requestMatchers("/login/**").permitAll()
                                 .anyRequest().authenticated()).
-                addFilterBefore(new JwtAuthenticationFilter(jwtUtil, userDetailsService,jwtAuthenticationEntryPoint), UsernamePasswordAuthenticationFilter.class)
+                addFilterBefore(new JwtAuthenticationFilter(userDetailsService, jwtAuthenticationEntryPoint), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandlingConfigurer ->
                         exceptionHandlingConfigurer
                                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)  // 设置认证失败时的处理逻辑

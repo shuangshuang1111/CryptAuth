@@ -25,12 +25,10 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
-    private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    public JwtAuthenticationFilter(JwtUtil jwtUtil, UserDetailsServiceImpl userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
-        this.jwtUtil = jwtUtil;
+    public JwtAuthenticationFilter(UserDetailsServiceImpl userDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
         this.userDetailsService = userDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
     }
@@ -61,6 +59,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
                         // 将认证信息放入 Spring Security 上下文
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    } else {
+                        // JWT 格式错误或其他验证失败
+                        jwtAuthenticationEntryPoint.commence(request, response, new AuthenticationException("Invalid token") {
+                        });
+                        return;
                     }
 
                 }

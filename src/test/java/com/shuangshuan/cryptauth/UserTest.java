@@ -16,7 +16,7 @@ public class UserTest {
 
     @Test
     void loadUserByUsername() {
-        UserDetails userDetails=userDetailsService.loadUserByUsername("123456");
+        UserDetails userDetails = userDetailsService.loadUserByUsername("123456");
         System.out.println(userDetails);
 
     }

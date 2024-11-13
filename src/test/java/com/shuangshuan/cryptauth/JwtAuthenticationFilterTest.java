@@ -15,8 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.mockito.Mockito.when;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "test")
@@ -33,8 +31,8 @@ public class JwtAuthenticationFilterTest {
 
     @BeforeEach
     public void setUp() {
-        validToken=JwtUtil.generateToken("123456");
-        System.out.println("前置生成的有效token值为："+validToken);
+        validToken = JwtUtil.generateToken("123456");
+        System.out.println("前置生成的有效token值为：" + validToken);
     }
 
     @Test
