@@ -1,11 +1,12 @@
 package com.shuangshuan.cryptauth.security.util;
 
-import com.shuangshuan.cryptauth.security.userdetail.UserAccount;
+import com.shuangshuan.cryptauth.security.entity.UserAccount;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -48,7 +49,7 @@ public class JwtUtil {
     }
 
     // 获取用户userid
-    public static String extractUserId(String token) {
+    public static String extractUserName(String token) {
         return extractClaims(token).getSubject();
     }
 
@@ -64,7 +65,7 @@ public class JwtUtil {
 
     // 验证 Token 是否有效
 
-    public static boolean validateToken(String token, UserAccount user) {
-        return (user.getId().toString().equals(extractUserId(token)) && !isTokenExpired(token));
+    public static boolean validateToken(String token, UserDetails user) {
+        return (user.getUsername().equals(extractUserName(token)) && !isTokenExpired(token));
     }
 }

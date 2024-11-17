@@ -31,7 +31,7 @@ public class JwtAuthenticationFilterTest {
 
     @BeforeEach
     public void setUp() {
-        validToken = JwtUtil.generateToken("123456");
+        validToken = JwtUtil.generateToken("sa");
         System.out.println("前置生成的有效token值为：" + validToken);
     }
 
@@ -39,7 +39,7 @@ public class JwtAuthenticationFilterTest {
     @WithMockUser(username = "sa")
     public void testJwtAuthenticationFilter_withValidToken() throws Exception {
         // 模拟请求并使用有效的 JWT Token
-        mockMvc.perform(MockMvcRequestBuilders.get("/auth/register")
+        mockMvc.perform(MockMvcRequestBuilders.get("/login")
                         .header("Authorization", "Bearer " + validToken))  // 模拟传递 Token
                 .andExpect(MockMvcResultMatchers.status().isOk()); // 验证响应状态码
     }
@@ -47,7 +47,7 @@ public class JwtAuthenticationFilterTest {
     @Test
     public void testJwtAuthenticationFilter_withInvalidToken() throws Exception {
         // 使用无效的 JWT Token
-        mockMvc.perform(MockMvcRequestBuilders.get("/auth/register")
+        mockMvc.perform(MockMvcRequestBuilders.get("/login")
                         .header("Authorization", "Bearer YiLCJpYXQiOjE3MzE0OTEzMjIsImV4cCI6"))  // 模拟传递无效 Token
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());  // 预期返回 401 Unauthorized
     }
@@ -55,7 +55,7 @@ public class JwtAuthenticationFilterTest {
     @Test
     public void testJwtAuthenticationFilter_withoutToken() throws Exception {
         // 未传递 Token
-        mockMvc.perform(MockMvcRequestBuilders.get("/auth/register"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/login"))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());  // 预期返回 401 Unauthorized
     }
 }

@@ -21,7 +21,9 @@ public enum ResponseCode {
     UNAUTHORIZED(401, "未授权"),
 
     // 禁止访问
-    FORBIDDEN(403, "禁止访问");
+    FORBIDDEN(403, "禁止访问"),
+
+    INVALID_CREDENTIALS(1001,"登录凭证无效");
 
     // 获取响应码
     private final int code;   // 响应码

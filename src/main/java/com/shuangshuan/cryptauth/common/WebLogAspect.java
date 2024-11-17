@@ -26,7 +26,7 @@ public class WebLogAspect {
     ObjectMapper objectMapper;
     Logger logger = LoggerFactory.getLogger(WebLogAspect.class);
 
-    @Around("execution(* com.shuangshuan.cryptauth.security.auth.*.*(..))")
+    @Around("execution(* com.shuangshuan.cryptauth.security.controller.*.*(..))")
     public Object doBasicProfiling(ProceedingJoinPoint pjp) throws Throwable {
         // 记录调用的方法和参数
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();

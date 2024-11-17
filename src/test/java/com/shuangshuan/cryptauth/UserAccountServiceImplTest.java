@@ -1,6 +1,6 @@
 package com.shuangshuan.cryptauth;
 
-import com.shuangshuan.cryptauth.security.userdetail.UserDetailsServiceImpl;
+import com.shuangshuan.cryptauth.security.service.UserAccountServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,10 +9,10 @@ import org.springframework.test.context.TestPropertySource;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class UserTest {
+public class UserAccountServiceImplTest {
 
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private UserAccountServiceImpl userDetailsService;
 
     @Test
     void loadUserByUsername() {

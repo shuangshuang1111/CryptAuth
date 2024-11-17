@@ -1,6 +1,6 @@
 package com.shuangshuan.cryptauth;
 
-import com.shuangshuan.cryptauth.security.userdetail.UserAccount;
+import com.shuangshuan.cryptauth.security.entity.UserAccount;
 import com.shuangshuan.cryptauth.security.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.Date;
 
 @SpringBootTest
-class CryptAuthApplicationTests {
+class JwtUtilTests {
 
     @Value("${jwt.secret}")
     private String secret;
