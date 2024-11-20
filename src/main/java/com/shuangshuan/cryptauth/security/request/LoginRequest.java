@@ -1,15 +1,17 @@
 package com.shuangshuan.cryptauth.security.request;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import java.util.Objects;
 
 @Data
 public class LoginRequest {
     @NotNull
+    @Schema(description = "用户名")
     private String username;
+
     @NotNull
+    @Schema(description = "密码")
     private String password;
 
     // 默认构造方法

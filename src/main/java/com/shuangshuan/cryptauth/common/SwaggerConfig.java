@@ -22,7 +22,7 @@ public class SwaggerConfig {
                 .info(new Info().title("CryptAuth API")
                         .description("description of CryptAuth API.")
                         .version("1.0").contact(new Contact().name("yunzhiliu")
-                                .email("1360194505@qq.com").url("salloszraj@gmail.com"))
+                                .email("1360194505@qq.com").url("CryptAuth/login"))
                         .license(new License().name("License of API")
                                 .url("API license URL")));
     }

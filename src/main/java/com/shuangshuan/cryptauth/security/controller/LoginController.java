@@ -1,9 +1,5 @@
 package com.shuangshuan.cryptauth.security.controller;
 
-
-//import com.shuangshuan.cryptauth.security.userdetail.User;
-//import com.shuangshuan.cryptauth.security.util.JwtUtil;
-//import org.springframework.beans.factory.annotation.Autowired;
 import com.shuangshuan.cryptauth.common.ResponseCode;
 import com.shuangshuan.cryptauth.common.ResponseResult;
 import com.shuangshuan.cryptauth.security.request.LoginRequest;
@@ -18,10 +14,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 
-@Tag(name = "LoginController",description = "LoginController")
+@Tag(name = "LoginController", description = "LoginController")
 @RestController
 public class LoginController {
 
@@ -34,16 +33,16 @@ public class LoginController {
     @Operation(summary = "login", description = "login")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "login successfully"),
-            @ApiResponse(responseCode = "1001", description = "login failed")
+            @ApiResponse(responseCode = "500", description = "login failed")
     })
     @PostMapping("/login")
     public ResponseResult<String> login(@Parameter(description = "loginRequest")
-                                            @RequestBody @Valid LoginRequest loginRequest,
-            BindingResult bindingResult) {
+                                        @RequestBody @Valid LoginRequest loginRequest,
+                                        BindingResult bindingResult) {
 
-        logger.info("request请求参数为:{} " , loginRequest);
+        logger.info("request请求参数为:{} ", loginRequest);
         // 调用认证服务生成 JWT Token
-        String token= authService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
+        String token = authService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
 
         // 如果 Token 为 null 或空，表示认证失败
         if (token == null || token.isEmpty()) {
@@ -56,6 +55,10 @@ public class LoginController {
 
 
     @GetMapping("/register")
+    @Operation(summary = "register", description = "register")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "register successfully")
+    })
     public String register() {
         return "User registered successfully!";
     }
