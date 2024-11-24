@@ -17,13 +17,15 @@ public enum ResponseCode {
     // 请求参数错误
     BAD_REQUEST(400, "请求参数错误"),
 
-    // 未授权
+    // 未授权  适用于用户没有提供有效的身份认证信息
     UNAUTHORIZED(401, "未授权"),
 
-    // 禁止访问
+    // 禁止访问 适用于用户已登录但没有权限访问资源
     FORBIDDEN(403, "禁止访问"),
 
     INVALID_CREDENTIALS(1001,"登录凭证无效");
+
+
 
     // 获取响应码
     private final int code;   // 响应码

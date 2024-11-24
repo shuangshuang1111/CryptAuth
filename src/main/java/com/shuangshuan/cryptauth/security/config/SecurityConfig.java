@@ -41,7 +41,7 @@ public class SecurityConfig {
 
     // 配置 HTTP 安全
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http,JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
@@ -49,7 +49,7 @@ public class SecurityConfig {
                                 .requestMatchers("/login/**","/swagger-ui/**", "/v3/api-docs/**",
                                         "/swagger-resources/**", "/webjars/**").permitAll()
                                 .anyRequest().authenticated()).
-                addFilterBefore(new JwtAuthenticationFilter(userDetailsService, jwtAuthenticationEntryPoint), UsernamePasswordAuthenticationFilter.class)
+                addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(exceptionHandlingConfigurer ->
                         exceptionHandlingConfigurer
                                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)  // 设置认证失败时的处理逻辑
@@ -57,6 +57,8 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        //是的，sessionCreationPolicy(SessionCreationPolicy.STATELESS) 配置表示你的应用程序将不使用 HTTP 会话来存储用户认证信息。在这种情况下，用户的身份验证信息通常是通过
+        // JWT（或其他类似的令牌）在每个请求中传递的，而不是通过服务器端会话来维持的。 无需写等处逻辑
 
         return http.build();
     }
