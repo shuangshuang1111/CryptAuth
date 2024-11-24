@@ -16,7 +16,7 @@ public class UserAccountServiceImplTest {
 
     @Test
     void loadUserByUsername() {
-        UserDetails userDetails = userDetailsService.loadUserByUsername("123456");
+        UserDetails userDetails = userDetailsService.loadUserByUsername("sa");
         System.out.println(userDetails);
 
     }

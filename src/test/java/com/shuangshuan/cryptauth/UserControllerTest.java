@@ -1,121 +1,109 @@
-package com.shuangshuan.cryptauth;
+package com.shuangshuan.cryptauth.security.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shuangshuan.cryptauth.common.ResponseCode;
-import com.shuangshuan.cryptauth.common.ResponseResult;
-import com.shuangshuan.cryptauth.security.controller.UserController;
-import com.shuangshuan.cryptauth.security.entity.UserAccount;
+import com.shuangshuan.cryptauth.security.request.AddUserRequest;
 import com.shuangshuan.cryptauth.security.request.ChangePasswordRequest;
-import com.shuangshuan.cryptauth.security.response.UserDetailsResponse;
-import com.shuangshuan.cryptauth.security.service.UserService;
+import com.shuangshuan.cryptauth.security.util.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles(value = "test")
-class UserControllerTest {
+public class UserControllerTest {
 
-    @Mock
-    private UserService userService; // Mock the UserService
+    @Autowired
+    private MockMvc mockMvc;
 
-    @InjectMocks
-    private UserController userController; // Inject mock into UserController
+    @Autowired
+    private ObjectMapper objectMapper;
 
+
+    private String token;
+
+    // 在测试前生成一个 Token
     @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this); // Initialize mocks
+    public void setUp() {
+        // 模拟用户登录并生成 JWT Token
+        // 假设用户名为 "sa" 和密码为 "password123"
+        token = JwtUtil.generateToken("sa");  // 使用你的 JwtTokenUtil 生成 token
+    }
+
+    // 测试获取用户详情接口
+    @Test
+    public void testGetUserDetails() throws Exception {
+        mockMvc.perform(get("/sys/details")
+                        .header("Authorization", "Bearer " + token))  // 将 token 添加到请求头
+                .andExpect(status().isOk())  // 期望返回 200 OK
+                .andExpect(jsonPath("$.data.username").value("sa"))  // 假设用户名是 sa
+                .andExpect(jsonPath("$.code").value(ResponseCode.SUCCESS.getCode()));  // 验证响应 code 是否为 SUCCESS
+    }
+
+
+    @Test
+    public void testChangePasswordFailure() throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("12345", "1234");
+
+        mockMvc.perform(put("/sys/user/updatePass")
+                        .header("Authorization", "Bearer " + token)  // 将 token 添加到请求头
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(changePasswordRequest)))
+                .andExpect(status().isOk())  // 期望返回 200 OK
+                .andExpect(jsonPath("$.message").value("Old password is incorrect"))
+                .andExpect(jsonPath("$.code").value(ResponseCode.ERROR.getCode()));
+    }
+
+    // 测试添加新用户接口
+    @Test
+    public void testAddUserSuccess() throws Exception {
+        AddUserRequest addUserRequest = new AddUserRequest("newuser", "password123", "1234567890", "New York", "Company A", "company123",
+                "role123", "path/to/photo.jpg", "CryptAuth");
+
+        mockMvc.perform(post("/sys/user/add")
+                        .header("Authorization", "Bearer " + token)  // 将 token 添加到请求头
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(addUserRequest)))
+                .andExpect(status().isOk())  // 期望返回 200 OK
+                .andExpect(jsonPath("$.message").value("User created successfully"))
+                .andExpect(jsonPath("$.code").value(ResponseCode.SUCCESS.getCode()));
     }
 
     @Test
-    void getUserDetails() {
-        // Arrange
-        String username = "testuser";
-        UserAccount userAccount = new UserAccount();
-        userAccount.setUsername(username);
-        userAccount.setPassword("1234");
-        userAccount.setMobile("123456789");
-        userAccount.setCity("CityName");
-        userAccount.setCompany("CompanyName");
-        userAccount.setCompanyId("1234");
-        userAccount.setRoleId("1");
-        userAccount.setStaffPhoto("photo.jpg");
-        userAccount.setId(2L);
+    public void testAddUserFailureUsernameExists() throws Exception {
+        AddUserRequest addUserRequest = new AddUserRequest("sa", "password123", "1234567890", "New York", "Company A", "company123",
+                "role123", "path/to/photo.jpg", "CryptAuth");
 
-        when(userService.queryUserByUsername(username)).thenReturn(userAccount);
-
-        // Simulate a logged-in user
-        SecurityContext context = mock(SecurityContext.class);
-        SecurityContextHolder.setContext(context);
-        when(context.getAuthentication().getPrincipal()).thenReturn(new User(username, "", new ArrayList<>()));
-
-        // Act
-        ResponseResult<UserDetailsResponse> result = userController.getUserDetails();
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(ResponseCode.SUCCESS.getCode(), result.getCode());
-        assertEquals(username, result.getData().getUsername());
-        assertEquals("123456789", result.getData().getMobile());
-        assertEquals("CityName", result.getData().getCity());
+        mockMvc.perform(post("/sys/user/add")
+                        .header("Authorization", "Bearer " + token)  // 将 token 添加到请求头
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(addUserRequest)))
+                .andExpect(status().isOk())  // 期望返回 200 OK
+                .andExpect(jsonPath("$.message").value("Username already exists"))
+                .andExpect(jsonPath("$.code").value(400));
     }
 
+    // 测试修改密码接口
     @Test
-    void changePassword_Success() {
-        // Arrange
-        String username = "testuser";
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("1234", "123456");
+    public void testChangePasswordSuccess() throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("123456", "1234");
 
-        when(userService.changePassword(username, changePasswordRequest)).thenReturn(true);
-
-        // Simulate a logged-in user
-        SecurityContext context = mock(SecurityContext.class);
-        SecurityContextHolder.setContext(context);
-        when(context.getAuthentication().getPrincipal()).thenReturn(new User(username, "", new ArrayList<>()));
-
-        // Act
-        ResponseResult<String> result = userController.changePassword(changePasswordRequest);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(ResponseCode.SUCCESS.getCode(), result.getCode());
-        assertEquals("Password changed successfully", result.getMessage());
-    }
-
-    @Test
-    void changePassword_Failure() {
-        // Arrange
-        String username = "testuser";
-        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("wrongoldpassword", "newpassword");
-
-        when(userService.changePassword(username, changePasswordRequest)).thenThrow(new IllegalArgumentException("Old password is incorrect"));
-
-        // Simulate a logged-in user
-        SecurityContext context = mock(SecurityContext.class);
-        SecurityContextHolder.setContext(context);
-        when(context.getAuthentication().getPrincipal()).thenReturn(new User(username, "", new ArrayList<>()));
-
-        // Act
-        ResponseResult<String> result = userController.changePassword(changePasswordRequest);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(ResponseCode.ERROR.getCode(), result.getCode());
-        assertEquals("Old password is incorrect", result.getMessage());
+        mockMvc.perform(put("/sys/user/updatePass")
+                        .header("Authorization", "Bearer " + token)  // 将 token 添加到请求头
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(changePasswordRequest)))
+                .andExpect(status().isOk())  // 期望返回 200 OK
+                .andExpect(jsonPath("$.message").value("Password changed successfully"))
+                .andExpect(jsonPath("$.code").value(ResponseCode.SUCCESS.getCode()));
     }
 }

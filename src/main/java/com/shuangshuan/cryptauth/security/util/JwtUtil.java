@@ -1,6 +1,5 @@
 package com.shuangshuan.cryptauth.security.util;
 
-import com.shuangshuan.cryptauth.security.entity.UserAccount;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -31,9 +30,9 @@ public class JwtUtil {
 
 
     // 生成 JWT Token
-    public static String generateToken(String userId) {
+    public static String generateToken(String userName) {
         return Jwts.builder()
-                .setSubject(userId)
+                .setSubject(userName)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(SignatureAlgorithm.HS256, secret)

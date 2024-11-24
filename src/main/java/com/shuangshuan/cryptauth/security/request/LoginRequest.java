@@ -1,18 +1,19 @@
 package com.shuangshuan.cryptauth.security.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class LoginRequest {
-    @NotNull
+    @NotBlank(message = "用户名不能为空")
     @Schema(description = "用户名")
     private String username;
 
-    @NotNull
+    @NotBlank(message = "密码不能为空")
     @Schema(description = "密码")
     private String password;
+
 
     // 默认构造方法
     public LoginRequest() {
