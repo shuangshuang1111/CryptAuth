@@ -4,7 +4,10 @@ import com.shuangshuan.cryptauth.authority.entity.Permission;
 import com.shuangshuan.cryptauth.authority.entity.RolePermission;
 import com.shuangshuan.cryptauth.authority.repository.PermissionRepository;
 import com.shuangshuan.cryptauth.authority.repository.RolePermissionRepository;
+import com.shuangshuan.cryptauth.common.BusinessResponseCode;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,8 @@ import java.util.Optional;
 
 @Service
 public class PermissionServiceImpl implements PermissionService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PermissionServiceImpl.class);
 
     @Autowired
     private RolePermissionRepository rolePermissionsRepository;
@@ -38,6 +43,7 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     // 判断权限是否存在
+    @Override
     public boolean existsById(Integer id) {
         return permissionRepository.existsById(id);
     }
@@ -82,7 +88,7 @@ public class PermissionServiceImpl implements PermissionService {
             return true;
         } catch (Exception e) {
             // 处理异常并返回 false，表示分配权限失败
-            e.printStackTrace();
+            logger.error("{}{}", roleId, BusinessResponseCode.PERMISSION_GRANTED_FAILED.getMessage());
             return false;
         }
     }
