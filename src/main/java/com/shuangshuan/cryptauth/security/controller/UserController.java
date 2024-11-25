@@ -1,6 +1,6 @@
 package com.shuangshuan.cryptauth.security.controller;
 
-import com.shuangshuan.cryptauth.common.ResponseCode;
+import com.shuangshuan.cryptauth.common.BusinessResponseCode;
 import com.shuangshuan.cryptauth.common.ResponseResult;
 import com.shuangshuan.cryptauth.security.entity.UserAccount;
 import com.shuangshuan.cryptauth.security.request.AddUserRequest;
@@ -82,7 +82,9 @@ public class UserController {
     @Operation(summary = "updatePass", description = "updatePass")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "updatePass successfully"),
-            @ApiResponse(responseCode = "500", description = "updatePass failed")
+            @ApiResponse(responseCode = "2001", description = "user not find"),
+            @ApiResponse(responseCode = "5001", description = "updatePass failed"),
+            @ApiResponse(responseCode = "5002", description = "old password incorrect")
     })
     @PutMapping("/user/updatePass")
     public ResponseResult<String> changePassword(@Parameter(description = "changePasswordRequest") @RequestBody ChangePasswordRequest changePasswordRequest,
@@ -95,13 +97,13 @@ public class UserController {
             boolean isPasswordChanged = userService.changePassword(username, changePasswordRequest);
 
             if (isPasswordChanged) {
-                return ResponseResult.success(null, "Password changed successfully");
+                return ResponseResult.success(null, BusinessResponseCode.PASSWORD_UPDATE_SUCCESS.getMessage());
             } else {
-                return ResponseResult.error(ResponseCode.ERROR.getCode(), "Failed to change password");
+                return ResponseResult.error(BusinessResponseCode.PASSWORD_UPDATE_FAILED.getCode(), BusinessResponseCode.PASSWORD_UPDATE_FAILED.getMessage());
             }
         } catch (IllegalArgumentException e) {
             // 处理密码不正确的情况
-            return ResponseResult.error(ResponseCode.ERROR.getCode(), "Old password is incorrect");
+            return ResponseResult.error(BusinessResponseCode.OLD_PASSWORD_INCORRECT.getCode(), BusinessResponseCode.OLD_PASSWORD_INCORRECT.getMessage());
         }
     }
 
@@ -116,7 +118,7 @@ public class UserController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "addUser successfully"),
             @ApiResponse(responseCode = "400", description = "Username already exists"),
-            @ApiResponse(responseCode = "500", description = "Error occurred while creating use")
+            @ApiResponse(responseCode = "2002", description = "Error occurred while creating use")
     })
     @PostMapping("/user/add")
     public ResponseResult<UserAccount> addUser(@Parameter(description = "addUserRequest") @RequestBody AddUserRequest addUserRequest,
@@ -129,13 +131,13 @@ public class UserController {
             UserAccount userAccount = userService.addUser(addUserRequest, loginUser);
 
             // 返回成功响应
-            return ResponseResult.success(userAccount, "User created successfully");
+            return ResponseResult.success(userAccount, BusinessResponseCode.USER_CREATED_SUCCESS.getMessage());
         } catch (IllegalArgumentException e) {
             // 处理用户名已存在的情况
-            return ResponseResult.error(400, "Username already exists");
+            return ResponseResult.error(BusinessResponseCode.USERNAME_ALREADY_EXISTS_FAILED.getCode(), BusinessResponseCode.USERNAME_ALREADY_EXISTS_FAILED.getMessage());
         } catch (Exception e) {
             // 处理其他未知异常
-            return ResponseResult.error(500, "Error occurred while creating user");
+            return ResponseResult.error(BusinessResponseCode.USER_CREATION_FAILED.getCode(), BusinessResponseCode.USER_CREATION_FAILED.getMessage());
         }
     }
 

@@ -25,6 +25,7 @@ public enum BusinessResponseCode {
     USER_CREATION_FAILED(2002, "用户创建失败"),
     USER_UPDATE_FAILED(2003, "用户更新失败"),
     USER_DELETE_FAILED(2004, "用户删除失败"),
+    USERNAME_ALREADY_EXISTS_FAILED(2005, "用户名已存在"),
 
     // 用户相关的正确
     USER_CREATED_SUCCESS(2100, "用户创建成功"),
@@ -48,7 +49,20 @@ public enum BusinessResponseCode {
     PERMISSION_CREATED_SUCCESS(3103, "权限点创建成功"),
     PERMISSION_UPDATED_SUCCESS(3104, "权限点更新成功"),
     PERMISSION_DELETED_SUCCESS(3105, "权限点删除成功"),
-    PERMISSION_LIST_FETCHED_SUCCESS(3106, "权限点列表获取成功");
+    PERMISSION_LIST_FETCHED_SUCCESS(3106, "权限点列表获取成功"),
+
+
+    // 用户登录相关的错误
+    LOGIN_FAILED(4001, "登录失败，用户名或密码错误"),
+    USERNAME_ALREADY_EXISTS(4002, "用户名已存在"),
+
+    // 登录相关的成功
+    LOGIN_SUCCESS(4100, "登录成功"),
+
+    // 修改密码相关的错误
+    PASSWORD_UPDATE_FAILED(5001, "密码修改失败"),
+    OLD_PASSWORD_INCORRECT(5002, "旧密码不正确"),
+    PASSWORD_UPDATE_SUCCESS(5100, "密码修改成功");
 
     private final int code;
     private final String message;

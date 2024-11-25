@@ -1,6 +1,6 @@
 package com.shuangshuan.cryptauth.security.controller;
 
-import com.shuangshuan.cryptauth.common.ResponseCode;
+import com.shuangshuan.cryptauth.common.BusinessResponseCode;
 import com.shuangshuan.cryptauth.common.ResponseResult;
 import com.shuangshuan.cryptauth.security.request.LoginRequest;
 import com.shuangshuan.cryptauth.security.service.AuthenticationService;
@@ -33,7 +33,7 @@ public class LoginController {
     @Operation(summary = "login", description = "login")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "login successfully"),
-            @ApiResponse(responseCode = "500", description = "login failed")
+            @ApiResponse(responseCode = "4001", description = "login failed")
     })
     @PostMapping("/login")
     public ResponseResult<String> login(@Parameter(description = "loginRequest")
@@ -46,7 +46,7 @@ public class LoginController {
 
         // 如果 Token 为 null 或空，表示认证失败
         if (token == null || token.isEmpty()) {
-            return ResponseResult.error(ResponseCode.ERROR.getCode(), "登陆失败，用户名或密码错误");
+            return ResponseResult.error(BusinessResponseCode.LOGIN_FAILED.getCode(), BusinessResponseCode.LOGIN_FAILED.getMessage());
         }
 
         return ResponseResult.success(token);
