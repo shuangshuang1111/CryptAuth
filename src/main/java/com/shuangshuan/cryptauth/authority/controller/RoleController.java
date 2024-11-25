@@ -36,7 +36,11 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
-    // 获取所有启用的角色
+    /**
+     * 获取所有启用的角色
+     *
+     * @return 包含启用角色信息的响应
+     */
     @Operation(summary = "Get all enabled roles", description = "Fetch all enabled roles")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Roles fetched successfully")
@@ -49,7 +53,12 @@ public class RoleController {
         return ResponseResult.success(roles, BusinessResponseCode.ROLE_LIST_FETCHED_SUCCESS.getMessage());
     }
 
-    // 根据ID获取角色及其权限
+    /**
+     * 根据ID获取角色及其权限
+     *
+     * @param id 角色ID
+     * @return 包含角色及其权限的响应
+     */
     @Operation(summary = "Get role with permissions", description = "Fetch role and its permissions by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Role fetched successfully"),
@@ -70,7 +79,12 @@ public class RoleController {
                 });
     }
 
-    // 创建新角色
+    /**
+     * 创建新角色
+     *
+     * @param roleRequest 角色信息请求对象
+     * @return 创建角色后的响应，包含角色ID
+     */
     @Operation(summary = "Create a new role", description = "Create a new role with the provided details")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Role created successfully"),
@@ -92,7 +106,13 @@ public class RoleController {
         }
     }
 
-    // 更新角色信息
+    /**
+     * 更新角色信息
+     *
+     * @param id          角色ID
+     * @param roleRequest 包含更新信息的请求对象
+     * @return 更新后的角色信息响应
+     */
     @Operation(summary = "Update role", description = "Update an existing role with the provided details")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Role updated successfully"),
@@ -121,7 +141,12 @@ public class RoleController {
         }
     }
 
-    // 删除角色
+    /**
+     * 删除指定ID的角色
+     *
+     * @param id 角色ID
+     * @return 删除操作的响应
+     */
     @Operation(summary = "Delete role", description = "Delete a role by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Role deleted successfully"),
@@ -145,7 +170,13 @@ public class RoleController {
         }
     }
 
-    // 分页查询角色列表
+    /**
+     * 分页查询角色列表
+     *
+     * @param page 页码，默认值为0
+     * @param size 每页的记录数，默认值为10
+     * @return 分页后的角色信息
+     */
     @Operation(summary = "Get roles with pagination", description = "Fetch roles in a paginated manner")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Roles fetched successfully")
@@ -161,7 +192,12 @@ public class RoleController {
         return ResponseResult.success(rolesPage, BusinessResponseCode.ROLE_LIST_FETCHED_SUCCESS.getMessage());
     }
 
-    // 分配权限给角色
+    /**
+     * 分配权限给角色
+     *
+     * @param assignPremRequest 包含角色ID和权限ID的请求对象
+     * @return 权限分配结果的响应
+     */
     @Operation(summary = "Assign permissions to role", description = "Assign multiple permissions to a specific role")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Permissions assigned successfully"),

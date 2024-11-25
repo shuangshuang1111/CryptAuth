@@ -19,28 +19,37 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-
+/**
+ * 登录控制器，处理用户登录及注册请求
+ */
 @Tag(name = "LoginController", description = "LoginController")
 @RestController
 public class LoginController {
 
-    Logger logger = LoggerFactory.getLogger(LoginController.class);
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @Autowired
     private AuthenticationService authService;
 
-
-    @Operation(summary = "login", description = "login")
+    /**
+     * 用户登录接口
+     *
+     * @param loginRequest  登录请求对象，包含用户名和密码
+     * @param bindingResult 校验结果对象，确保请求参数的有效性
+     * @return 登录成功时返回JWT Token，登录失败时返回错误信息
+     */
+    @Operation(summary = "login", description = "User login. Authenticate and return JWT token.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "login successfully"),
-            @ApiResponse(responseCode = "4001", description = "login failed")
+            @ApiResponse(responseCode = "200", description = "Login successfully"),
+            @ApiResponse(responseCode = "4001", description = "Login failed, invalid credentials")
     })
     @PostMapping("/login")
-    public ResponseResult<String> login(@Parameter(description = "loginRequest")
+    public ResponseResult<String> login(@Parameter(description = "Login request object containing username and password")
                                         @RequestBody @Valid LoginRequest loginRequest,
                                         BindingResult bindingResult) {
 
-        logger.info("request请求参数为:{} ", loginRequest);
+        logger.info("Login request received with parameters: {}", loginRequest);
+
         // 调用认证服务生成 JWT Token
         String token = authService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
 
@@ -49,16 +58,20 @@ public class LoginController {
             return ResponseResult.error(BusinessResponseCode.LOGIN_FAILED);
         }
 
+        // 返回生成的JWT Token
         return ResponseResult.success(token);
-
     }
 
-
-    @GetMapping("/register")
-    @Operation(summary = "register", description = "register")
+    /**
+     * 用户注册接口（示例接口，实际注册逻辑未实现）
+     *
+     * @return 注册成功的响应消息
+     */
+    @Operation(summary = "register", description = "User registration endpoint. This is a placeholder for user registration logic.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "register successfully")
+            @ApiResponse(responseCode = "200", description = "Register successfully")
     })
+    @GetMapping("/register")
     public String register() {
         return "User registered successfully!";
     }

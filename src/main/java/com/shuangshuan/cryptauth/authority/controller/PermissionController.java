@@ -31,6 +31,11 @@ public class PermissionController {
     @Autowired
     private PermissionService permissionService;
 
+    /**
+     * 获取所有权限列表
+     *
+     * @return 所有权限信息的响应结果
+     */
     @Operation(summary = "Get all permissions", description = "Fetch the list of all permissions")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Permissions fetched successfully")
@@ -43,6 +48,12 @@ public class PermissionController {
         return ResponseResult.success(permissions, BusinessResponseCode.PERMISSION_LIST_FETCHED_SUCCESS.getMessage());
     }
 
+    /**
+     * 获取指定权限的详细信息
+     *
+     * @param id 权限的ID
+     * @return 权限详细信息的响应结果
+     */
     @Operation(summary = "Get permission details", description = "Fetch the details of a specific permission by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Permission fetched successfully"),
@@ -63,6 +74,12 @@ public class PermissionController {
                 });
     }
 
+    /**
+     * 创建新的权限
+     *
+     * @param permissionRequest 包含权限信息的请求对象
+     * @return 创建结果的响应
+     */
     @Operation(summary = "Create a new permission", description = "Create a new permission with the provided details")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Permission created successfully"),
@@ -84,6 +101,13 @@ public class PermissionController {
         }
     }
 
+    /**
+     * 更新已有的权限
+     *
+     * @param id                权限的ID
+     * @param permissionRequest 包含更新信息的请求对象
+     * @return 更新结果的响应
+     */
     @Operation(summary = "Update permission", description = "Update an existing permission with the provided ID and details")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Permission updated successfully"),
@@ -112,6 +136,12 @@ public class PermissionController {
         }
     }
 
+    /**
+     * 删除指定ID的权限
+     *
+     * @param id 权限的ID
+     * @return 删除结果的响应
+     */
     @Operation(summary = "Delete permission", description = "Delete a permission by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Permission deleted successfully"),
