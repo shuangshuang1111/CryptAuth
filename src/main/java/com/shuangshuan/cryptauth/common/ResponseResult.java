@@ -35,20 +35,28 @@ public class ResponseResult<T> {
     public ResponseResult() {
     }
 
-    // 使用枚举 ResponseCode 生成响应
+    // 使用系统返回码生成响应
     public static <T> ResponseResult<T> success(T data) {
-        ResponseCode responseCode = ResponseCode.SUCCESS;
+        SystemResponseCode responseCode = SystemResponseCode.SUCCESS;
         return new ResponseResult<>(responseCode.getCode(), data, responseCode.getMessage(), true);
     }
 
-    // 使用枚举 ResponseCode 生成错误响应
-    public static <T> ResponseResult<T> error(ResponseCode responseCode) {
+    public static <T> ResponseResult<T> error(SystemResponseCode responseCode) {
+        return new ResponseResult<>(responseCode.getCode(), null, responseCode.getMessage(), false);
+    }
+
+    // 使用业务返回码生成响应
+    public static <T> ResponseResult<T> success(T data, BusinessResponseCode responseCode) {
+        return new ResponseResult<>(responseCode.getCode(), data, responseCode.getMessage(), true);
+    }
+
+    public static <T> ResponseResult<T> error(BusinessResponseCode responseCode) {
         return new ResponseResult<>(responseCode.getCode(), null, responseCode.getMessage(), false);
     }
 
     // 静态方法，便于快速创建成功的响应
     public static <T> ResponseResult<T> success(T data, String message) {
-        return new ResponseResult<>(200, data, message, true);
+        return new ResponseResult<>(SystemResponseCode.SUCCESS.getCode(), data, message, true);
     }
 
     // 静态方法，便于快速创建失败的响应

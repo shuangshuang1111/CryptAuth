@@ -3,7 +3,7 @@ package com.shuangshuan.cryptauth.common;
 import lombok.Getter;
 
 @Getter
-public enum ResponseCode {
+public enum SystemResponseCode {
 
     // 成功的响应
     SUCCESS(200, "操作成功"),
@@ -23,8 +23,7 @@ public enum ResponseCode {
     // 禁止访问 适用于用户已登录但没有权限访问资源
     FORBIDDEN(403, "禁止访问"),
 
-    INVALID_CREDENTIALS(1001,"登录凭证无效");
-
+    INVALID_CREDENTIALS(1001, "登录凭证无效");
 
 
     // 获取响应码
@@ -33,16 +32,16 @@ public enum ResponseCode {
     private final String message;  // 响应消息
 
     // 构造函数
-    ResponseCode(int code, String message) {
+    SystemResponseCode(int code, String message) {
         this.code = code;
         this.message = message;
     }
 
     // 根据响应码获取对应的枚举
-    public static ResponseCode getByCode(int code) {
-        for (ResponseCode responseCode : values()) {
-            if (responseCode.getCode() == code) {
-                return responseCode;
+    public static SystemResponseCode getByCode(int code) {
+        for (SystemResponseCode systemResponseCode : values()) {
+            if (systemResponseCode.getCode() == code) {
+                return systemResponseCode;
             }
         }
         return null;  // 如果没有找到对应的响应码，则返回 null
