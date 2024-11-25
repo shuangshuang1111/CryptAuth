@@ -43,9 +43,6 @@ public class UserAccount {
     @Schema(description = "头像")
     private String staffPhoto;
 
-    @Schema(description = "角色id")
-    private String roleId;
-
     @Schema(description = "项目名称")
     private String projectName;
 
@@ -60,6 +57,9 @@ public class UserAccount {
 
     @Schema(description = "更新时间")
     private LocalDateTime updatedAt;
+
+    @Schema(description = "是否已删除", example = "0")
+    private Boolean deleted;
 
     // 在实体插入时自动设置 created_at 和 created_by
     @PrePersist
