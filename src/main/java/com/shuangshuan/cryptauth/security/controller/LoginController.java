@@ -46,7 +46,7 @@ public class LoginController {
 
         // 如果 Token 为 null 或空，表示认证失败
         if (token == null || token.isEmpty()) {
-            return ResponseResult.error(BusinessResponseCode.LOGIN_FAILED.getCode(), BusinessResponseCode.LOGIN_FAILED.getMessage());
+            return ResponseResult.error(BusinessResponseCode.LOGIN_FAILED);
         }
 
         return ResponseResult.success(token);

@@ -99,11 +99,11 @@ public class UserController {
             if (isPasswordChanged) {
                 return ResponseResult.success(null, BusinessResponseCode.PASSWORD_UPDATE_SUCCESS.getMessage());
             } else {
-                return ResponseResult.error(BusinessResponseCode.PASSWORD_UPDATE_FAILED.getCode(), BusinessResponseCode.PASSWORD_UPDATE_FAILED.getMessage());
+                return ResponseResult.error(BusinessResponseCode.PASSWORD_UPDATE_FAILED);
             }
         } catch (IllegalArgumentException e) {
             // 处理密码不正确的情况
-            return ResponseResult.error(BusinessResponseCode.OLD_PASSWORD_INCORRECT.getCode(), BusinessResponseCode.OLD_PASSWORD_INCORRECT.getMessage());
+            return ResponseResult.error(BusinessResponseCode.OLD_PASSWORD_INCORRECT);
         }
     }
 
@@ -134,10 +134,10 @@ public class UserController {
             return ResponseResult.success(userAccount, BusinessResponseCode.USER_CREATED_SUCCESS.getMessage());
         } catch (IllegalArgumentException e) {
             // 处理用户名已存在的情况
-            return ResponseResult.error(BusinessResponseCode.USERNAME_ALREADY_EXISTS_FAILED.getCode(), BusinessResponseCode.USERNAME_ALREADY_EXISTS_FAILED.getMessage());
+            return ResponseResult.error(BusinessResponseCode.USERNAME_ALREADY_EXISTS_FAILED);
         } catch (Exception e) {
             // 处理其他未知异常
-            return ResponseResult.error(BusinessResponseCode.USER_CREATION_FAILED.getCode(), BusinessResponseCode.USER_CREATION_FAILED.getMessage());
+            return ResponseResult.error(BusinessResponseCode.USER_CREATION_FAILED);
         }
     }
 
