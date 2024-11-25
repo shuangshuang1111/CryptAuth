@@ -1,6 +1,8 @@
 package com.shuangshuan.cryptauth.authority.service;
 
+import com.shuangshuan.cryptauth.authority.entity.Permission;
 import com.shuangshuan.cryptauth.authority.entity.RolePermission;
+import com.shuangshuan.cryptauth.authority.repository.PermissionRepository;
 import com.shuangshuan.cryptauth.authority.repository.RolePermissionRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +10,47 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PermissionServiceImpl implements PermissionService {
 
     @Autowired
     private RolePermissionRepository rolePermissionsRepository;
+
+    @Autowired
+    private PermissionRepository permissionRepository;
+
+    // 获取所有权限点
+    public List<Permission> findAllPermissions() {
+        return permissionRepository.findAll();
+    }
+
+    // 根据 ID 查找权限点
+    public Optional<Permission> findPermissionById(Integer id) {
+        return permissionRepository.findById(id);
+    }
+
+    // 创建新的权限点
+    @Transactional
+    public Permission save(Permission permission) {
+        return permissionRepository.save(permission);
+    }
+
+    // 判断权限是否存在
+    public boolean existsById(Integer id) {
+        return permissionRepository.existsById(id);
+    }
+
+    // 删除权限点
+    @Transactional
+    public boolean deleteById(Integer id) {
+        if (!permissionRepository.existsById(id)) {
+            return false;
+        }
+        permissionRepository.deleteById(id);
+        return true;
+    }
 
     /**
      * 为角色分配权限

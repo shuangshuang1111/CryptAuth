@@ -35,10 +35,20 @@ public enum BusinessResponseCode {
 
     // 权限相关的错误
     PERMISSION_DENIED(3001, "权限不足"),
+    PERMISSION_CREATION_FAILED(3001, "权限点创建失败"),
+    PERMISSION_UPDATE_FAILED(3002, "权限点更新失败"),
+    PERMISSION_DELETE_FAILED(3003, "权限点删除失败"),
+    PERMISSION_NOT_FOUND(3004, "权限点未找到"),
+
 
     // 权限相关的正确
     PERMISSION_GRANTED_SUCCESS(3100, "权限授权成功"),
-    PERMISSION_REVOKED_SUCCESS(3101, "权限撤销成功");
+    PERMISSION_REVOKED_SUCCESS(3101, "权限撤销成功"),
+    PERMISSION_FETCHED_SUCCESS(3102, "权限点信息获取成功"),
+    PERMISSION_CREATED_SUCCESS(3103, "权限点创建成功"),
+    PERMISSION_UPDATED_SUCCESS(3104, "权限点更新成功"),
+    PERMISSION_DELETED_SUCCESS(3105, "权限点删除成功"),
+    PERMISSION_LIST_FETCHED_SUCCESS(3106, "权限点列表获取成功");
 
     private final int code;
     private final String message;

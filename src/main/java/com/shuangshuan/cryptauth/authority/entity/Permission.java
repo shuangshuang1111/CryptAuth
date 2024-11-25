@@ -23,16 +23,16 @@ public class Permission {
     @Schema(description = "权限描述", example = "View permission for the user")
     private String description;
 
-    @Schema(description = "是否对外可见", example = "1")
+    @Schema(description = "权限点开启状态，0关闭, 1开启. (暂时无需判断, 前端逻辑上默认全都有效直接用)", example = "1")
     private Boolean enVisible;
 
     @Schema(description = "权限名称", example = "View Permission")
     private String name;
 
-    @Schema(description = "父权限ID", example = "0")
+    @Schema(description = "权限点父级id，页面权限点pid值为'0', 按钮权限点值为所属页面权限点的id值", example = "0")
     private Integer pid;
 
-    @Schema(description = "权限类型", example = "1")
+    @Schema(description = "权限点类型，1为页面路由权限点, 2为按钮权限点", example = "1")
     private Integer type;
 
     @Schema(description = "额外属性", example = "{\"key\": \"value\"}")
