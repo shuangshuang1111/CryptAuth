@@ -15,11 +15,15 @@ public interface RoleService {
 
     boolean existsById(Integer id);
 
-    boolean deleteById(Integer id);
+    void deleteById(Integer id);
 
     Optional<RoleWithPermissionsResponse> findRoleWithPermissionsById(Integer id);
 
     Page<Role> findAllRoles(Pageable pageable);
 
     boolean assignPermissionsToRole(Integer roleId, List<Integer> permIds);
+
+    Optional<Role> findRoleByName(String name);
+
+    Optional<Role> findRoleById(Integer id);
 }

@@ -11,6 +11,7 @@ public enum BusinessResponseCode {
     ROLE_UPDATE_FAILED(1003, "角色更新失败"),
     ROLE_DELETE_FAILED(1004, "角色删除失败"),
     ROLE_PERMISSION_ASSIGN_FAILED(1005, "角色分配失败"),
+    ROLE_ALREADY_EXISTS_FAILED(1006, "角色已经存在"),
 
     // 角色相关的正确
     ROLE_CREATED_SUCCESS(1100, "角色创建成功"),

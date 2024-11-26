@@ -24,6 +24,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "RoleController", description = "Role management operations")
 @RestController
@@ -94,6 +95,10 @@ public class RoleController {
     public ResponseResult<Integer> createRole(@Parameter(description = "Role details to create")
                                               @RequestBody @Valid RoleRequest roleRequest) {
         logger.info("Creating new role with data: {}", roleRequest);
+        Optional<Role> rl = roleService.findRoleByName(roleRequest.getName());
+        if (rl.isPresent()) {
+            return ResponseResult.error(BusinessResponseCode.ROLE_ALREADY_EXISTS_FAILED);
+        }
         Role role = new Role();
         BeanUtils.copyProperties(roleRequest, role);
         Role savedRole = roleService.save(role);
@@ -124,13 +129,12 @@ public class RoleController {
             @Parameter(description = "ID of the role to update") @PathVariable Integer id,
             @Parameter(description = "Role details to update") @RequestBody @Valid RoleRequest roleRequest) {
         logger.info("Updating role with ID: {} and data: {}", id, roleRequest);
-        if (!roleService.existsById(id)) {
-            logger.warn("Role with ID: {} not found for update", id);
+        Optional<Role> rl = roleService.findRoleById(id);
+        if (rl.isEmpty()) {
             return ResponseResult.error(BusinessResponseCode.ROLE_NOT_FOUND);
         }
-        Role role = new Role();
-        BeanUtils.copyProperties(roleRequest, role);
-        role.setId(id); // Ensure the ID is set to update the existing role
+        Role role = rl.get();
+        BeanUtils.copyProperties(roleRequest, role);// Ensure the ID is set to update the existing role
         Role updatedRole = roleService.save(role);
         if (updatedRole != null) {
             logger.info("Updated role with ID: {}", updatedRole.getId());
@@ -160,21 +164,18 @@ public class RoleController {
             logger.warn("Role with ID: {} not found for deletion", id);
             return ResponseResult.error(BusinessResponseCode.ROLE_NOT_FOUND);
         }
-        boolean isDeleted = roleService.deleteById(id);
-        if (isDeleted) {
-            logger.info("Successfully deleted role with ID: {}", id);
-            return ResponseResult.success(null, BusinessResponseCode.ROLE_DELETED_SUCCESS.getMessage());
-        } else {
-            logger.error("Failed to delete role with ID: {}", id);
-            return ResponseResult.error(BusinessResponseCode.ROLE_DELETE_FAILED);
-        }
+        roleService.deleteById(id);
+
+        logger.info("Successfully deleted role with ID: {}", id);
+        return ResponseResult.success(null, BusinessResponseCode.ROLE_DELETED_SUCCESS.getMessage());
     }
 
+
     /**
-     * 分页查询角色列表
+     * 分页查询角色列表  目前把已经删除的角色也查询出来了
      *
-     * @param page 页码，默认值为0
-     * @param size 每页的记录数，默认值为10
+     * @param page     页码，默认值为0
+     * @param pagesize 每页的记录数，默认值为10
      * @return 分页后的角色信息
      */
     @Operation(summary = "Get roles with pagination", description = "Fetch roles in a paginated manner")
@@ -184,11 +185,11 @@ public class RoleController {
     @GetMapping
     public ResponseResult<Page<Role>> getRolesPage(
             @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
-        logger.info("Fetching roles with pagination, page: {}, size: {}", page, size);
-        Pageable pageable = PageRequest.of(page, size);
+            @RequestParam(value = "pagesize", defaultValue = "10") int pagesize) {
+        logger.info("Fetching roles with pagination, page: {}, size: {}", page, pagesize);
+        Pageable pageable = PageRequest.of(page, pagesize);
         Page<Role> rolesPage = roleService.findAllRoles(pageable);
-        logger.info("Fetched {} roles in page {} with size {}", rolesPage.getTotalElements(), page, size);
+        logger.info("Fetched {} roles in page {} with size {}", rolesPage.getTotalElements(), page, pagesize);
         return ResponseResult.success(rolesPage, BusinessResponseCode.ROLE_LIST_FETCHED_SUCCESS.getMessage());
     }
 

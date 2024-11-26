@@ -17,6 +17,7 @@ public class Role {
     @Schema(description = "角色ID", example = "1")
     private Integer id;
 
+    @Column(unique = true)
     @Schema(description = "角色名称", example = "Admin")
     private String name;
 

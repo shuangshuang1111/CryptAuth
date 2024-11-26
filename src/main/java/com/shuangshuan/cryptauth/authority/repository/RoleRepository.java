@@ -1,7 +1,10 @@
 package com.shuangshuan.cryptauth.authority.repository;
 
 import com.shuangshuan.cryptauth.authority.entity.Role;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,5 +24,12 @@ public interface RoleRepository extends JpaRepository<Role, Integer> {
 
     // 删除角色
     void deleteById(Integer id);
+
+    Optional<Role> findByName(String name);
+
+    @Modifying
+    @Query("UPDATE Role p SET p.deleted = 1 WHERE p.id = :id")
+    void softDeleteById(@Param("id") Integer id);
+
 }
 

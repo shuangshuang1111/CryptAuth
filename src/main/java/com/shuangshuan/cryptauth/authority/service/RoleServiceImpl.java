@@ -4,6 +4,8 @@ import com.shuangshuan.cryptauth.authority.entity.Role;
 import com.shuangshuan.cryptauth.authority.repository.RolePermissionRepository;
 import com.shuangshuan.cryptauth.authority.repository.RoleRepository;
 import com.shuangshuan.cryptauth.authority.response.RoleWithPermissionsResponse;
+import com.shuangshuan.cryptauth.security.util.SecurityUtils;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -53,6 +55,16 @@ public class RoleServiceImpl implements RoleService {
         return permissionService.assignPermissionsToRole(roleId, permIds);
     }
 
+    @Override
+    public Optional<Role> findRoleByName(String name) {
+        return roleRepository.findByName(name);
+    }
+
+    @Override
+    public Optional<Role> findRoleById(Integer id) {
+        return roleRepository.findById(id);
+    }
+
     // 获取所有启用的角色
     public List<Role> findAllEnabledRoles() {
         return roleRepository.findByState(1); // 状态为 1 表示启用
@@ -60,6 +72,12 @@ public class RoleServiceImpl implements RoleService {
 
     // 保存角色（创建或更新）
     public Role save(Role role) {
+        String userName = SecurityUtils.getCurrentUsername();
+        if (role != null && role.getId() == null) {
+            role.setCreatedBy(userName);
+            role.setDeleted(0);
+        }
+        role.setUpdatedBy(userName);
         return roleRepository.save(role);
     }
 
@@ -69,16 +87,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     // 根据 ID 删除角色
-    public boolean deleteById(Integer id) {
-        if (roleRepository.existsById(id)) {
-            try {
-                roleRepository.deleteById(id);
-                return true;
-            } catch (Exception e) {
-                // Handle the exception if needed
-                return false;
-            }
-        }
-        return false;
+    @Transactional
+    public void deleteById(Integer id) {
+        roleRepository.softDeleteById(id);
+
     }
 }

@@ -77,7 +77,7 @@ public class PermissionServiceImpl implements PermissionService {
         try {
             // 1. 删除角色已有的权限关联
             rolePermissionsRepository.deleteByRoleId(roleId);
-
+            String userName = SecurityUtils.getCurrentUsername();
             // 2. 如果传递了权限ID列表，插入新的权限关联
             if (permIds != null && !permIds.isEmpty()) {
                 List<RolePermission> rolePermissionsList = new ArrayList<>();
@@ -85,6 +85,9 @@ public class PermissionServiceImpl implements PermissionService {
                     RolePermission rolePermission = new RolePermission();
                     rolePermission.setRoleId(roleId);
                     rolePermission.setPermId(permId);
+                    rolePermission.setCreatedBy(userName);
+                    rolePermission.setUpdatedBy(userName);
+                    rolePermission.setDeleted(0);
                     rolePermissionsList.add(rolePermission);
                 }
 
