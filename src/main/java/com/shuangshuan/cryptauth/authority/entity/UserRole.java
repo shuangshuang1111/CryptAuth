@@ -23,11 +23,11 @@ public class UserRole {
     @Schema(description = "角色ID", example = "2")
     private Integer roleId;
 
-    @Schema(description = "创建者ID", example = "1")
-    private Integer createdBy;
+    @Schema(description = "创建者", example = "1")
+    private String createdBy;
 
-    @Schema(description = "更新者ID", example = "2")
-    private Integer updatedBy;
+    @Schema(description = "更新者", example = "2")
+    private String updatedBy;
 
     @Schema(description = "创建时间")
     private LocalDateTime createdAt;
@@ -36,7 +36,7 @@ public class UserRole {
     private LocalDateTime updatedAt;
 
     @Schema(description = "是否已删除", example = "0")
-    private Boolean deleted;
+    private Integer deleted;
 
     // 在实体插入时自动设置 created_at 和 created_by
     @PrePersist

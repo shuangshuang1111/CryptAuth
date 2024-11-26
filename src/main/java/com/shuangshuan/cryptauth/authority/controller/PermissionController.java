@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -19,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "PermissionController", description = "Permission management operations")
 @RestController
@@ -89,6 +91,10 @@ public class PermissionController {
     public ResponseResult<Integer> createPermission(
             @Parameter(description = "Permission details to create") @RequestBody @Valid PermissionRequest permissionRequest) {
         logger.info("Creating new permission with data: {}", permissionRequest);
+        Optional<Permission> ps = permissionService.findPermissionByCode(permissionRequest.getCode());
+        if (ps.isPresent()) {
+            return ResponseResult.error(BusinessResponseCode.PERMISSION_CODE_ALREADY_EXISTS);
+        }
         Permission permission = new Permission();
         BeanUtils.copyProperties(permissionRequest, permission);
         Permission savedPermission = permissionService.save(permission);
@@ -116,16 +122,15 @@ public class PermissionController {
     })
     @PutMapping("/{id}")
     public ResponseResult<Permission> updatePermission(
-            @Parameter(description = "ID of the permission to update") @PathVariable Integer id,
+            @Parameter(description = "ID of the permission to update") @PathVariable @NotNull Integer id,
             @Parameter(description = "Permission details to update") @RequestBody @Valid PermissionRequest permissionRequest) {
         logger.info("Updating permission with ID: {} and data: {}", id, permissionRequest);
-        if (!permissionService.existsById(id)) {
-            logger.warn("Permission with ID: {} not found for update", id);
+        Optional<Permission> ps = permissionService.findPermissionById(id);
+        if (ps.isEmpty()) {
             return ResponseResult.error(BusinessResponseCode.PERMISSION_NOT_FOUND);
         }
-        Permission permission = new Permission();
+        Permission permission = ps.get();
         BeanUtils.copyProperties(permissionRequest, permission);
-        permission.setId(id);  // Ensure the ID is set to update the existing permission
         Permission updatedPermission = permissionService.save(permission);
         if (updatedPermission != null) {
             logger.info("Updated permission with ID: {}", updatedPermission.getId());
@@ -156,13 +161,9 @@ public class PermissionController {
             logger.warn("Permission with ID: {} not found for deletion", id);
             return ResponseResult.error(BusinessResponseCode.PERMISSION_NOT_FOUND);
         }
-        boolean isDeleted = permissionService.deleteById(id);
-        if (isDeleted) {
-            logger.info("Successfully deleted permission with ID: {}", id);
-            return ResponseResult.success(null, BusinessResponseCode.PERMISSION_DELETED_SUCCESS.getMessage());
-        } else {
-            logger.error("Failed to delete permission with ID: {}", id);
-            return ResponseResult.error(BusinessResponseCode.PERMISSION_DELETE_FAILED);
-        }
+        permissionService.deleteById(id);
+        logger.info("Successfully deleted permission with ID: {}", id);
+        return ResponseResult.success(null, BusinessResponseCode.PERMISSION_DELETED_SUCCESS.getMessage());
     }
 }
+

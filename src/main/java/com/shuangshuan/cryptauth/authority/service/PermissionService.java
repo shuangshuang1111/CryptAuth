@@ -22,5 +22,8 @@ public interface PermissionService {
     boolean existsById(Integer id);
 
     // 删除权限点
-    boolean deleteById(Integer id);
+    void deleteById(Integer id);
+
+    // 根据 ID 查找权限点
+    Optional<Permission> findPermissionByCode(String code);
 }

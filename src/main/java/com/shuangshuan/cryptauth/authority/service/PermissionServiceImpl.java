@@ -5,6 +5,7 @@ import com.shuangshuan.cryptauth.authority.entity.RolePermission;
 import com.shuangshuan.cryptauth.authority.repository.PermissionRepository;
 import com.shuangshuan.cryptauth.authority.repository.RolePermissionRepository;
 import com.shuangshuan.cryptauth.common.BusinessResponseCode;
+import com.shuangshuan.cryptauth.security.util.SecurityUtils;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     // 获取所有权限点
     public List<Permission> findAllPermissions() {
-        return permissionRepository.findAll();
+        return permissionRepository.findAllActivePermissions();
     }
 
     // 根据 ID 查找权限点
@@ -39,6 +40,12 @@ public class PermissionServiceImpl implements PermissionService {
     // 创建新的权限点
     @Transactional
     public Permission save(Permission permission) {
+        String userName = SecurityUtils.getCurrentUsername();
+        if (permission != null && permission.getId() == null) {
+            permission.setCreatedBy(userName);
+            permission.setDeleted(0);
+        }
+        permission.setUpdatedBy(userName);
         return permissionRepository.save(permission);
     }
 
@@ -50,12 +57,13 @@ public class PermissionServiceImpl implements PermissionService {
 
     // 删除权限点
     @Transactional
-    public boolean deleteById(Integer id) {
-        if (!permissionRepository.existsById(id)) {
-            return false;
-        }
-        permissionRepository.deleteById(id);
-        return true;
+    public void deleteById(Integer id) {
+        permissionRepository.softDeleteById(id);
+    }
+
+    @Override
+    public Optional<Permission> findPermissionByCode(String code) {
+        return permissionRepository.findByCode(code);
     }
 
     /**

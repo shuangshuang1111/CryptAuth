@@ -17,6 +17,7 @@ public class Permission {
     @Schema(description = "权限ID", example = "1")
     private Integer id;
 
+    @Column(unique = true)
     @Schema(description = "权限代码", example = "PERMISSION_VIEW")
     private String code;
 
@@ -24,7 +25,7 @@ public class Permission {
     private String description;
 
     @Schema(description = "权限点开启状态，0关闭, 1开启. (暂时无需判断, 前端逻辑上默认全都有效直接用)", example = "1")
-    private Boolean enVisible;
+    private String enVisible;
 
     @Schema(description = "权限名称", example = "View Permission")
     private String name;
@@ -44,14 +45,14 @@ public class Permission {
     @Schema(description = "更新时间")
     private LocalDateTime updatedAt;
 
-    @Schema(description = "创建者ID", example = "1")
-    private Integer createdBy;
+    @Schema(description = "创建者", example = "1")
+    private String createdBy;
 
-    @Schema(description = "更新者ID", example = "2")
-    private Integer updatedBy;
+    @Schema(description = "更新者", example = "2")
+    private String updatedBy;
 
-    @Schema(description = "是否已删除", example = "0")
-    private Boolean deleted;
+    @Schema(description = "是否已删除 ,删除为 1  未删除 0", example = "0")
+    private Integer deleted;
 
     // 在实体插入时自动设置 created_at 和 created_by
     @PrePersist

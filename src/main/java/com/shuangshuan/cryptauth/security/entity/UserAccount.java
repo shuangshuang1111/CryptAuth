@@ -20,6 +20,7 @@ public class UserAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     @Schema(description = "用户名称")
     private String username;
 
@@ -59,7 +60,7 @@ public class UserAccount {
     private LocalDateTime updatedAt;
 
     @Schema(description = "是否已删除", example = "0")
-    private Boolean deleted;
+    private Integer deleted;
 
     // 在实体插入时自动设置 created_at 和 created_by
     @PrePersist

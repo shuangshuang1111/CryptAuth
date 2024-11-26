@@ -7,14 +7,13 @@ import com.shuangshuan.cryptauth.security.request.AddUserRequest;
 import com.shuangshuan.cryptauth.security.request.ChangePasswordRequest;
 import com.shuangshuan.cryptauth.security.response.UserDetailsResponse;
 import com.shuangshuan.cryptauth.security.service.UserService;
+import com.shuangshuan.cryptauth.security.util.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +38,7 @@ public class UserController {
     @GetMapping("/details")
     public ResponseResult<UserDetailsResponse> getUserDetails() {
         // 获取当前登录用户的用户名
-        String username = getCurrentUsername();
+        String username = SecurityUtils.getCurrentUsername();
 
         // 查找用户并返回详细信息
         UserAccount user = userService.queryUserByUsername(username);
@@ -51,7 +50,7 @@ public class UserController {
                 user.getCity(),
                 user.getCompany(),
                 user.getCompanyId(),
-                user.getRoleId(),// 返回 roles 信息
+                null,
                 user.getStaffPhoto(),
                 user.getId()
         );
@@ -59,19 +58,6 @@ public class UserController {
         return ResponseResult.success(userDetailsResponse);
     }
 
-    /**
-     * 获取当前登录用户的用户名
-     *
-     * @return 当前登录用户名
-     */
-    private String getCurrentUsername() {
-        // 从 SecurityContext 中获取当前登录用户的用户名
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal instanceof UserDetails) {
-            return ((UserDetails) principal).getUsername();
-        }
-        return principal.toString();
-    }
 
     /**
      * 修改用户密码
@@ -90,7 +76,7 @@ public class UserController {
     public ResponseResult<String> changePassword(@Parameter(description = "changePasswordRequest") @RequestBody ChangePasswordRequest changePasswordRequest,
                                                  BindingResult bindingResult) {
         // 获取当前登录用户的用户名
-        String username = getCurrentUsername();
+        String username = SecurityUtils.getCurrentUsername();
 
         // 调用服务层修改密码
         try {
@@ -126,7 +112,7 @@ public class UserController {
         try {
 
             // 获取当前登录用户的用户名
-            String loginUser = getCurrentUsername();
+            String loginUser = SecurityUtils.getCurrentUsername();
             // 调用服务层创建用户
             UserAccount userAccount = userService.addUser(addUserRequest, loginUser);
 

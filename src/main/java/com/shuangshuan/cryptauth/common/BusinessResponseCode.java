@@ -41,6 +41,7 @@ public enum BusinessResponseCode {
     PERMISSION_DELETE_FAILED(3003, "权限点删除失败"),
     PERMISSION_NOT_FOUND(3004, "权限点未找到"),
     PERMISSION_GRANTED_FAILED(3005, "权限授权失败"),
+    PERMISSION_CODE_ALREADY_EXISTS(3006, "该权限码已经存在"),
 
     // 权限相关的正确
     PERMISSION_GRANTED_SUCCESS(3100, "权限授权成功"),
