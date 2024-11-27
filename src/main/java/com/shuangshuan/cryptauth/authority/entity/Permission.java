@@ -36,6 +36,9 @@ public class Permission {
     @Schema(description = "权限点类型，1为页面路由权限点, 2为按钮权限点", example = "1")
     private Integer type;
 
+    @Schema(description = "如果是按钮权限点则对应接口地址 如果是页面权限点 则为空", example = "/sys/role/assignRoles")
+    private String path;
+
     @Schema(description = "额外属性", example = "{\"key\": \"value\"}")
     private String properties;
 

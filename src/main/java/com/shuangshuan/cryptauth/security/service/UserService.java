@@ -6,9 +6,11 @@ import com.shuangshuan.cryptauth.security.request.ChangePasswordRequest;
 
 public interface UserService {
 
-    UserAccount  queryUserByUsername(String username);
+    UserAccount queryUserByUsername(String username);
 
     boolean changePassword(String username, ChangePasswordRequest changePasswordRequest);
 
-    UserAccount addUser(AddUserRequest addUserRequest,String username);
+    UserAccount addUser(AddUserRequest addUserRequest, String username);
+
+    boolean existsById(Integer id);
 }

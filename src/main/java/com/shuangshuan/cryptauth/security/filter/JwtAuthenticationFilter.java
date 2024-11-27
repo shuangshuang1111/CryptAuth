@@ -1,10 +1,8 @@
 package com.shuangshuan.cryptauth.security.filter;
 
 
-import com.shuangshuan.cryptauth.security.controller.LoginController;
 import com.shuangshuan.cryptauth.security.entrypoint.JwtAuthenticationEntryPoint;
 import com.shuangshuan.cryptauth.security.service.UserAccountServiceImpl;
-import com.shuangshuan.cryptauth.security.entity.UserAccount;
 import com.shuangshuan.cryptauth.security.util.JwtUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -63,7 +61,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-                    if (JwtUtil.validateToken(token,  userDetails)) {
+                    if (JwtUtil.validateToken(token, userDetails)) {
                         UsernamePasswordAuthenticationToken authenticationToken =
                                 // new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                                 // 现在还没有权限，第三个参数先设置为null，之后改回来
@@ -76,7 +74,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
 
             } catch (ExpiredJwtException e) {
-                // Token 已过期
+                // Token 已过期  todo  这里需要自己写吗？还是它自己就能捕获到这个异常了？
                 jwtAuthenticationEntryPoint.commence(request, response, new AuthenticationException("Token expired") {
                 });
                 return;

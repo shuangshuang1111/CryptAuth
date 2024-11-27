@@ -17,5 +17,8 @@ public interface RolePermissionRepository extends JpaRepository<RolePermission, 
 
 
     void deleteByRoleId(Integer roleId);
+
+    // 根据 roleId 查询所有关联的 permissionId
+    List<Integer> findPermissionIdByRoleIdIn(List<Integer> roleIds);
 }
 

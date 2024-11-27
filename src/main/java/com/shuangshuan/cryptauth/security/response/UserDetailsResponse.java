@@ -21,11 +21,11 @@ public class UserDetailsResponse {
     @Schema(description = "头像地址")
     private String staffPhoto;
     @Schema(description = "用户id")
-    private Long userId;
+    private Integer userId;
 
     // 构造函数
     public UserDetailsResponse(String username, String mobile, String city, String company,
-                               String companyId, String roles, String staffPhoto, Long userId) {
+                               String companyId, String roles, String staffPhoto, Integer userId) {
         this.username = username;
         this.mobile = mobile;
         this.city = city;

@@ -1,5 +1,6 @@
 package com.shuangshuan.cryptauth.security.service;
 
+import com.shuangshuan.cryptauth.common.BusinessResponseCode;
 import com.shuangshuan.cryptauth.security.entity.UserAccount;
 import com.shuangshuan.cryptauth.security.repository.UserRepository;
 import com.shuangshuan.cryptauth.security.request.AddUserRequest;
@@ -27,11 +28,11 @@ public class UserServiceImpl implements UserService {
     public boolean changePassword(String username, ChangePasswordRequest changePasswordRequest) {
         // 查找用户
         UserAccount user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(BusinessResponseCode.USER_NOT_FOUND.getMessage()));
 
         // 验证旧密码是否正确
         if (!passwordEncoder.matches(changePasswordRequest.getOldPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("Old password is incorrect");
+            throw new IllegalArgumentException(BusinessResponseCode.OLD_PASSWORD_INCORRECT.getMessage());
         }
 
         // 更新密码
@@ -63,7 +64,6 @@ public class UserServiceImpl implements UserService {
         userAccount.setCity(addUserRequest.getCity());
         userAccount.setCompany(addUserRequest.getCompany());
         userAccount.setCompanyId(addUserRequest.getCompanyId());
-        userAccount.setRoleId(addUserRequest.getRoleId());
         userAccount.setStaffPhoto(addUserRequest.getStaffPhoto());
         userAccount.setProjectName(addUserRequest.getProjectName());
         userAccount.setCreatedBy(username);
@@ -71,6 +71,11 @@ public class UserServiceImpl implements UserService {
 
         // 保存用户到数据库
         return userRepository.save(userAccount);
+    }
+
+    @Override
+    public boolean existsById(Integer id) {
+        return userRepository.existsById(id);
     }
 
 

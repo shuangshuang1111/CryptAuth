@@ -28,5 +28,8 @@ public interface PermissionRepository extends JpaRepository<Permission, Integer>
     @Query("UPDATE Permission p SET p.deleted = 1 WHERE p.id = :id")
     void softDeleteById(@Param("id") Integer id);
 
+    // 根据权限ID列表查询所有权限信息
+    List<Permission> findByIdIn(List<Integer> permissionIds);
+
 }
 
