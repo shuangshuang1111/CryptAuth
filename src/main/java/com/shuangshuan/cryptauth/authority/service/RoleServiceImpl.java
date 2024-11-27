@@ -1,11 +1,17 @@
 package com.shuangshuan.cryptauth.authority.service;
 
 import com.shuangshuan.cryptauth.authority.entity.Role;
+import com.shuangshuan.cryptauth.authority.entity.UserRole;
 import com.shuangshuan.cryptauth.authority.repository.RolePermissionRepository;
 import com.shuangshuan.cryptauth.authority.repository.RoleRepository;
+import com.shuangshuan.cryptauth.authority.repository.UserRoleRepository;
 import com.shuangshuan.cryptauth.authority.response.RoleWithPermissionsResponse;
+import com.shuangshuan.cryptauth.common.BusinessResponseCode;
+import com.shuangshuan.cryptauth.security.service.UserServiceImpl;
 import com.shuangshuan.cryptauth.security.util.SecurityUtils;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,9 +19,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RoleServiceImpl implements RoleService {
+
+    private static final Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
 
     @Autowired
     private RoleRepository roleRepository;
@@ -25,6 +34,12 @@ public class RoleServiceImpl implements RoleService {
 
     @Autowired
     private PermissionService permissionService;
+
+    @Autowired
+    private UserServiceImpl userService;
+
+    @Autowired
+    private UserRoleRepository userRoleRepository;
 
     // 根据ID查询角色及其权限
     public Optional<RoleWithPermissionsResponse> findRoleWithPermissionsById(Integer id) {
@@ -64,6 +79,40 @@ public class RoleServiceImpl implements RoleService {
     public Optional<Role> findRoleById(Integer id) {
         return roleRepository.findById(id);
     }
+
+
+    @Override
+    @Transactional
+    public boolean assignRolesToUser(Integer userId, List<Integer> roleIds) {
+        try {
+            userRoleRepository.deleteByUserId(userId);
+            String userName = SecurityUtils.getCurrentUsername();
+            if (!roleIds.isEmpty()) {
+                List<UserRole> roleList = roleIds.stream()
+                        .map(roleId -> {
+                            UserRole userRole = new UserRole();
+                            userRole.setRoleId(roleId);
+                            userRole.setUserId(userId);
+                            userRole.setCreatedBy(userName);
+                            userRole.setUpdatedBy(userName);
+                            userRole.setDeleted(0);
+                            return userRole;
+                        })
+                        .collect(Collectors.toList());
+
+                userRoleRepository.saveAll(roleList);
+            }
+
+            return true;
+        } catch (Exception e) {
+            // 处理异常并返回 false，表示分配权限失败
+            logger.error("{}{}", userId, BusinessResponseCode.ROLE_ASSIGNMENT_FAILED.getMessage());
+            return false;
+        }
+
+
+    }
+
 
     // 获取所有启用的角色
     public List<Role> findAllEnabledRoles() {

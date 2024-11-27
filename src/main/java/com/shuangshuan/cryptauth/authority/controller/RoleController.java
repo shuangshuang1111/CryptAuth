@@ -2,11 +2,13 @@ package com.shuangshuan.cryptauth.authority.controller;
 
 import com.shuangshuan.cryptauth.authority.entity.Role;
 import com.shuangshuan.cryptauth.authority.request.AssignPremRequest;
+import com.shuangshuan.cryptauth.authority.request.AssignRoleRequest;
 import com.shuangshuan.cryptauth.authority.request.RoleRequest;
 import com.shuangshuan.cryptauth.authority.response.RoleWithPermissionsResponse;
 import com.shuangshuan.cryptauth.authority.service.RoleService;
 import com.shuangshuan.cryptauth.common.BusinessResponseCode;
 import com.shuangshuan.cryptauth.common.ResponseResult;
+import com.shuangshuan.cryptauth.security.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,6 +38,9 @@ public class RoleController {
 
     @Autowired
     private RoleService roleService;
+
+    @Autowired
+    private UserServiceImpl userService;
 
     /**
      * 获取所有启用的角色
@@ -217,4 +222,30 @@ public class RoleController {
                 ? ResponseResult.success(null, BusinessResponseCode.ROLE_PERMISSIONS_ASSIGNED_SUCCESS.getMessage())
                 : ResponseResult.error(BusinessResponseCode.ROLE_PERMISSION_ASSIGN_FAILED);
     }
+
+    @Operation(summary = "Assign roles to user", description = "Assign multiple roles to a specific user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Roles assigned to user successfully"),
+            @ApiResponse(responseCode = "1001", description = "User not found"),
+            @ApiResponse(responseCode = "1002", description = "Failed to assign roles")
+    })
+    @PostMapping("/assignRoles")
+    public ResponseResult<Void> assignRolesToUser(
+            @RequestBody @Valid AssignRoleRequest assignRoleRequest) {
+        logger.info("Assigning roles {} to user with ID: {}", assignRoleRequest.getRoleIds(), assignRoleRequest.getId());
+
+        // 你需要检查用户是否存在
+        if (!userService.existsById(assignRoleRequest.getId())) {
+            logger.warn("User with ID: {} not found for role assignment", assignRoleRequest.getId());
+            return ResponseResult.error(BusinessResponseCode.USER_NOT_FOUND);
+        }
+
+        // 调用RoleService进行角色分配
+        boolean success = roleService.assignRolesToUser(assignRoleRequest.getId(), assignRoleRequest.getRoleIds());
+        return success
+                ? ResponseResult.success(null, BusinessResponseCode.ROLES_ASSIGNED_TO_USER_SUCCESS.getMessage())
+                : ResponseResult.error(BusinessResponseCode.ROLE_ASSIGNMENT_FAILED);
+    }
+
+
 }

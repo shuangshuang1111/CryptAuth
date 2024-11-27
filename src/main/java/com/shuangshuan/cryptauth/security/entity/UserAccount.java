@@ -18,7 +18,7 @@ public class UserAccount {
     @Schema(description = "用户id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(unique = true)
     @Schema(description = "用户名称")

@@ -7,4 +7,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRoleRepository extends JpaRepository<UserRole, Integer> {
 
+    void deleteByUserId(Integer userId);
+
+
 }

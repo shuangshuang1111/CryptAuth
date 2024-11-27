@@ -12,6 +12,7 @@ public enum BusinessResponseCode {
     ROLE_DELETE_FAILED(1004, "角色删除失败"),
     ROLE_PERMISSION_ASSIGN_FAILED(1005, "角色分配失败"),
     ROLE_ALREADY_EXISTS_FAILED(1006, "角色已经存在"),
+    ROLE_ASSIGNMENT_FAILED(1007, "角色分配给用户失败"),
 
     // 角色相关的正确
     ROLE_CREATED_SUCCESS(1100, "角色创建成功"),
@@ -19,7 +20,8 @@ public enum BusinessResponseCode {
     ROLE_DELETED_SUCCESS(1102, "角色删除成功"),
     ROLE_LIST_FETCHED_SUCCESS(1103, "角色列表获取成功"),
     ROLE_FETCHED_SUCCESS(1104, "角色获取成功"),
-    ROLE_PERMISSIONS_ASSIGNED_SUCCESS(1105, "角色分配成功"),
+    ROLE_PERMISSIONS_ASSIGNED_SUCCESS(1105, "权限分配给角色成功"),
+    ROLES_ASSIGNED_TO_USER_SUCCESS(1105, "角色分配给用户成功"),
 
     // 用户相关的错误
     USER_NOT_FOUND(2001, "用户未找到"),
@@ -43,6 +45,7 @@ public enum BusinessResponseCode {
     PERMISSION_NOT_FOUND(3004, "权限点未找到"),
     PERMISSION_GRANTED_FAILED(3005, "权限授权失败"),
     PERMISSION_CODE_ALREADY_EXISTS(3006, "该权限码已经存在"),
+
 
     // 权限相关的正确
     PERMISSION_GRANTED_SUCCESS(3100, "权限授权成功"),

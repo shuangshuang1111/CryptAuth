@@ -14,4 +14,7 @@ public interface UserRepository extends JpaRepository<UserAccount, Long> {
     // 根据用户名查找用户
     boolean existsByUsername(String username);
 
+    // 判断角色是否存在
+    boolean existsById(Integer id);
+
 }

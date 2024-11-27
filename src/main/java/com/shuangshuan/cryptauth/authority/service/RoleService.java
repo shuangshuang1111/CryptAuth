@@ -26,4 +26,6 @@ public interface RoleService {
     Optional<Role> findRoleByName(String name);
 
     Optional<Role> findRoleById(Integer id);
+
+    boolean assignRolesToUser(Integer id, List<Integer> roleIds);
 }
