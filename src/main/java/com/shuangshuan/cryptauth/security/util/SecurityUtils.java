@@ -26,6 +26,7 @@ public class SecurityUtils {
 
     /**
      * 获取原始请求的 URI（如果是转发或包含时，会返回转发前的 URI）
+     * 这个方法目前在postman里卖弄测试获取不到值  到前端再调用看看吧
      *
      * @param request HttpServletRequest 对象
      * @return 原始请求的 URI

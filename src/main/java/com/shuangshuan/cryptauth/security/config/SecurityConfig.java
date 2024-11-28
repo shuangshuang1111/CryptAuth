@@ -43,7 +43,7 @@ public class SecurityConfig {
     // 配置 JWT 认证过滤器
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(userDetailsService, jwtAuthenticationEntryPoint);
+        return new JwtAuthenticationFilter(userDetailsService, jwtAuthenticationEntryPoint, jwtAccessDeniedHandler);
     }
 
     // 配置 HTTP 安全
@@ -70,6 +70,7 @@ public class SecurityConfig {
         ;
         //是的，sessionCreationPolicy(SessionCreationPolicy.STATELESS) 配置表示你的应用程序将不使用 HTTP 会话来存储用户认证信息。在这种情况下，用户的身份验证信息通常是通过
         // JWT（或其他类似的令牌）在每个请求中传递的，而不是通过服务器端会话来维持的。 无需写等处逻辑
+        //在这段代码中，sessionCreationPolicy(SessionCreationPolicy.STATELESS) 的配置确实会影响 Spring Security 的行为，但并不意味着每个请求都会清空 SecurityContextHolder 中的认证信息。
 
         return http.build();
     }

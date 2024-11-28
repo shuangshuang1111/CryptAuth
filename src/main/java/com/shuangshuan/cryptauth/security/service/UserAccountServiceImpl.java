@@ -1,6 +1,8 @@
 package com.shuangshuan.cryptauth.security.service;
 
 import com.shuangshuan.cryptauth.authority.entity.Permission;
+import com.shuangshuan.cryptauth.authority.entity.RolePermission;
+import com.shuangshuan.cryptauth.authority.entity.UserRole;
 import com.shuangshuan.cryptauth.authority.repository.PermissionRepository;
 import com.shuangshuan.cryptauth.authority.repository.RolePermissionRepository;
 import com.shuangshuan.cryptauth.authority.repository.UserRoleRepository;
@@ -18,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserAccountServiceImpl implements UserDetailsService {
@@ -37,11 +40,20 @@ public class UserAccountServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        UserAccount user = userRepository.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        UserAccount user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         // 查看下这个用户下所有的角色id
-        List<Integer> roleIds = userRoleRepository.findRoleIdByUserId(user.getId());
+        List<UserRole> roles = userRoleRepository.findRoleIdByUserId(user.getId());
+        // 提取 UserRole 中的 id，并放入一个新的 List<Integer>
+        List<Integer> roleIds = roles.stream()
+                .map(UserRole::getRoleId)  // 提取每个 UserRole 的 id
+                .collect(Collectors.toList());  // 将结果收集到 List 中
         // 遍历这些角色id，查询出这些角色id对应的权限id 并去重
-        Set<Integer> permissionIds = new HashSet<>(rolePermissionRepository.findPermissionIdByRoleIdIn(roleIds));
+        List<RolePermission> rolePermissionList = rolePermissionRepository.findPermissionIdByRoleIdIn(roleIds);
+        Set<Integer> permissionIds = rolePermissionList.stream()
+                .map(RolePermission::getPermId) // 提取 id
+                .collect(Collectors.toSet()); // 将结果收集到 Set 中，自动去重
         // 根据权限ID查询权限信息
         List<Permission> permissions = permissionRepository.findByIdIn(new ArrayList<>(permissionIds));
 

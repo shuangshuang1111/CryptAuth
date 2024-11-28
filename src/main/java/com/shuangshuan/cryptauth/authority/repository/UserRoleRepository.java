@@ -11,7 +11,8 @@ public interface UserRoleRepository extends JpaRepository<UserRole, Integer> {
 
     void deleteByUserId(Integer userId);
 
-    List<Integer> findRoleIdByUserId(Integer userId);
+    // 使用原生 SQL 查询 roleId，根据 userId 查询
+    List<UserRole> findRoleIdByUserId(Integer userId);
 
 
 }
